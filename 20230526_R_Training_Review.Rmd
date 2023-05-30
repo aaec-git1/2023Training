@@ -1,0 +1,121 @@
+---
+title: "R Training - Review of Week 1"
+author: "Susan E. Chen"
+date: "`r format(Sys.time(), '%b %d %Y')`"
+header-includes:
+  - \usepackage{titling,xfrac,amsmath,amsthm,amssymb,bm}
+output:
+  html_document:
+    toc: yes
+    toc_depth: 4
+    toc_float:
+      collapsed: yes
+    theme: readable
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
+colorlinks: yes
+urlcolor: blue
+linkcolor: blue
+citecolor: blue
+anchorcolor: blue
+toccolor: blue
+fontsize: 12pt
+---
+
+
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+library(gapminder)#Icall this package but never use it
+```
+
+# Reading in data And Using ggplot2
+
+## Preliminaries:
+
+I recommend you create a folder on your hard drive called `training`. For example, I created a folder and here is the path to my files: `C:/Users/ecsusan/Documents/training/`. Note the front slashes in the pathname!!  If you already have a training folder then go ahead and use that one. Just make sure you can find the path really easily.
+
+## Starting with someone else's example:
+
+It is always useful to look at someone else's code to get started. So please use this `*.Rmd` to help you walk through what I am doing here. My recommendation is to clone the repo and open the Rmd file in Rstudio. This will make it easy to *copy chunks of code from my file to yours* then you can make changes. 
+
+If you look at the code in my `R` markdown file you will see the first chunk of code called `setup`. In this chunk (see above code chunk if in Rmd file) you will see a package being called using a `library()` statement. Inside the parentheses you will see for example `library(gapminder)`. This statement is loading the `gapminder` package from an internal `R` library. FYI: Some nice person wrote the code for the `gapminder` package and they saved a dataset in the package so now it is publicly available for all to use when you use the `gapminder` package.
+
+In real life you *will not* have a nice package to call that already has useful datasets built in that you can play with. You will have to load your own data from an excel file on your hard drive. But ... you already know how to do that :)
+
+## Create a new Rmd file And Knit It
+
+You are now going to create a new *.Rmd file and call it `20230531Exercise.Rmd`. Save it in your `training` folder. 
+
+In your `20230531Exercise.Rmd` copy the first 14 lines of code from *my* Rmarkdown file. These 14 lines are the YAML header. Make sure to change the name in the YAML header to your name. Preserve the formatting !!!! Now go ahead and knit your file. Knitting your file does 2 things. It saves it for you and it renders it to an html document like we did on Monday afternoon.
+
+## Loading excel data into R from your hard drive
+
+In this exercise, you will load and analyze the data set `2021ACSapp.xlsx`. This is data we used for a 2021 DSPG project. Download this `xlsx` file from Teams and save it on your hard drive in your `training` folder. 
+Now execute the following steps:
+
+1. Read the *.xlsx file. Or, check Nathaniel's notes from the classes he taught earlier this week. Or, use this hint: you will want to make sure you load the package `readxl` using the command `library(readxl)`. Then you can read in the excel spreadsheet using the command read_excel("filename") where you substitute the file you want to load including the path. So the command on my PC is `read_excel("C:/Users/ecsusan/Documents/training/2021ACSapp.xlsx")`. Note: you need to know where you stored the file on your computer and make sure you put the correct full pathname. Here is my chunk. I read in the excel spreadsheet and I save it to an object called `mydata2` so I can use it again further down in my R script.
+
+```{r}
+library(readxl) #I call the library here instead of in the setup chunk 
+                #to make it clear you need to load this package to read 
+                #in an excel spreadsheet 
+mydata2 <- read_excel("2021ACSapp.xlsx")
+#C:\Users\ecsusan\Dropbox\2021VT-DSPG-FILES\2022SummerProgram\training
+```
+
+2. Now that you have read in your excel spreadsheet and saved it as an object in `R`, you can now use it. For example, you can use the `head()` command to print out the first 6 lines of data. You should always do a check to make sure you are reading in your dataset correctly. Below in the code chunk I use the `head()` command:
+
+```{r}
+head(mydata2)
+```
+
+The lines of data produced by the `head(mydata2)` command show that you have data for a number of US counties. FYI: these are coal mining counties in Appalachia. Other interesting variables are:
+
+pctdis: percent with a disability 
+pcthi: percent covered by health insurance
+pctunemp: percent unemployed
+housingownocc: estimate of number of people in owner occumpied housing. 
+
+There are more variables but these are good for now. I will show you more about how to get ACS data later today.
+
+## Analyzing data
+3. Now you can use the ggplot2 package to plot a histogram of per capita income across all these counties (percapinc). See my code chunk below. Go ahead and make a histogram of `percapinc`. 
+
+```{r }
+library(ggplot2) #load the ggplot2 package that makes histograms, scatterplots, etc.
+ggplot(data=mydata2, aes(x=percapinc)) +
+  geom_histogram() + theme_classic()
+```
+
+4. Now make a histogram of percent covered by health insurance. You can try doing other variables too (eg. pctdis, pcthi, pctunemp).
+
+5. Now make a scatterplot of percapinc vs pct health insurance coverage
+```{r}
+ggplot(mydata2, aes(x=percapinc, y=pcthi)) + geom_point()
+```
+
+6. Now change the color of the points. I did red below but you should do blue. Also try changing the shape to shape=2. Try shape = 0, 3, 25 for fun.
+
+```{r}
+ggplot(mydata2, aes(x=percapinc, y=pcthi)) + geom_point(shape=18, color="red")
+```
+
+7. Now knit your file to an html document. Click on the Knit button (knitting needle at the top of this page). 
+
+
+5. Now check in your training folder. You should see (1) your excel file, (2) your `20230531Exercise.Rmd` file, (3) the `20230531Exercise.html` you just created.
+
+Congrats you are now a pro at creating and making html files from an Rmd file. You will be doing lots of this over the next few weeks. An Rmd file is awesome because it is a log of your analysis and your code. You can share it with your team mates and use it to help other teams to understand how to code. For example, I took the html file and hosted it on shinyapps.io for you []() and that is the link I shared with you for this tutorial. 
+
+## Recap
+To recap: in this tutorial you learned how to:
+
+1. Read in an excel spreadsheet from your hard drive;
+2. How to save it as an object in R;
+3. How to use the object to perform analysis.
+4. You did this in R markdown so your steps are completely documented and reproducible when you need it tomorrow.
+5. You now have a nice looking html file to use.
+
